@@ -36,6 +36,7 @@ public class HomeController {
         posts.add(post2);
         posts.add(post3);
 
+        // Gave this post to the view
         model.addAttribute("posts", posts);
         return "index";
     }
