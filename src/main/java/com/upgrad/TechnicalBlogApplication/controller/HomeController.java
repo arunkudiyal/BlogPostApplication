@@ -11,7 +11,7 @@ import java.util.Date;
 @Controller
 public class HomeController {
 
-    @RequestMapping("/getAllPosts")
+    @RequestMapping("/")
     public String getAllPost(Model model) {
         // Business Logic
 
