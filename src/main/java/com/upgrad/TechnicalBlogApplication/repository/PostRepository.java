@@ -43,6 +43,7 @@ public class PostRepository {
             transaction.begin();
             Post post = entityManager.find(Post.class, postId);
             entityManager.remove(post);
+            transaction.commit();
         } catch (Exception e) {
             System.out.println(e);
             transaction.rollback();

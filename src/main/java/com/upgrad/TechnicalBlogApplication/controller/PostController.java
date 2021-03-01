@@ -45,9 +45,10 @@ public class PostController {
         return "redirect:/posts";
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/deletepost/{postId}")
-    public String deletePost(@PathVariable Integer postId) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deletepost")
+    public String deletePost(@RequestParam(name = "postId") Integer postId) {
         postService.deletePost(postId);
         return "redirect:/posts";
     }
+
 }
