@@ -6,8 +6,8 @@ import java.util.Date;
 @Entity
 @Table(name = "posts")
 public class Post {
-    // components of the post
 
+    // components of the post
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -22,9 +22,11 @@ public class Post {
     @Column(name = "date")
     private Date date;
 
+    // Relationship
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
+
     // Getters and Setter
-
-
     public Integer getId() {
         return id;
     }
