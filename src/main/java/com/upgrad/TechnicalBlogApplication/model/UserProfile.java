@@ -6,11 +6,6 @@ import javax.persistence.*;
 @Table(name = "user_profile")
 public class UserProfile {
 
-    // Constructors
-    UserProfile() {
-        System.out.println("*** User Profile ***");
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")

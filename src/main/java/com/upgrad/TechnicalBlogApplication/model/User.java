@@ -2,6 +2,7 @@ package com.upgrad.TechnicalBlogApplication.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -12,7 +13,7 @@ public class User {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")
@@ -25,9 +26,25 @@ public class User {
     private UserProfile userProfile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private ArrayList<Post> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     // GETTERS AND SETTERS
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
     public Integer getId() {
         return id;
     }
