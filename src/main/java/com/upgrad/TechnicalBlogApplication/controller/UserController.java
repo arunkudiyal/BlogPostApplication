@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class UserController {
 
     // POST Request to "/users/login"
     @RequestMapping(method = RequestMethod.POST, value = "/users/login")
-    public String loginUser(User user) {
+    public String loginUser(User user, HttpSession session) {
 
         User existingUser = userService.login(user);
 
@@ -38,6 +39,9 @@ public class UserController {
             System.out.println("USER DOES NOT EXIST");
             return "users/login";
         } else {
+            // Maintain the Session
+            session.setAttribute("LoggedUser", existingUser);
+
             System.out.println("USER FOUND!");
             return "redirect:/posts";
         }
@@ -65,7 +69,10 @@ public class UserController {
     }
 
     @RequestMapping("/users/logout")
-    public String userLogout() {
+    public String userLogout(HttpSession session) {
+        // Kill the session
+        session.invalidate();
+
         return "redirect:/";
     }
 }
