@@ -1,22 +1,26 @@
 package com.upgrad.TechnicalBlogApplication.controller;
 
-import com.upgrad.TechnicalBlogApplication.model.Post;
 import com.upgrad.TechnicalBlogApplication.model.User;
+import com.upgrad.TechnicalBlogApplication.model.UserProfile;
 import com.upgrad.TechnicalBlogApplication.service.PostService;
 import com.upgrad.TechnicalBlogApplication.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
 
-    private UserService userService = new UserService();
-    private PostService postService = new PostService();
+    @Autowired
+    private UserService userService;
 
     // GET Request to "/users/login
     @RequestMapping(method = RequestMethod.GET, value = "/users/login")
@@ -27,11 +31,18 @@ public class UserController {
 
     // POST Request to "/users/login"
     @RequestMapping(method = RequestMethod.POST, value = "/users/login")
-    public String loginUser(User user) {
+    public String loginUser(User user, HttpSession session) {
+
+        User existingUser = userService.login(user);
+
         // check if the credentials match
-        if(userService.login(user)) {
+        if(existingUser != null) {
+            // Creating User Session
+            session.setAttribute("LoggedUser", existingUser);
+            System.out.println("USER FOUND!!");
             return "redirect:/posts";
         } else {
+            System.out.println("USER DOES NOT EXIST!!");
             return "users/login";
         }
     }
@@ -41,21 +52,24 @@ public class UserController {
     // Logout :- "/users/logout
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/registration")
-    public String registration() {
+    public String registration(Model model) {
+        User user = new User();
+        UserProfile userProfile = new UserProfile();
+        user.setUserProfile(userProfile);
+        model.addAttribute("user", user);
         return "users/registration";
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/users/registration")
     public String userRegistration(User user) {
-        // Business logic to save the creds. of the users to teh given database
-
+        // Business logic to save the credentials. of the users to teh given database
+        userService.registerUser(user);
         return "redirect:/users/login";
     }
 
     @RequestMapping("/users/logout")
-    public String userLogout(Model model) {
-        List<Post> posts = postService.getAllPosts();
-        model.addAttribute("posts", posts);
+    public String userLogout(HttpSession session) {
+        session.invalidate();
         return "redirect:/";
     }
 }

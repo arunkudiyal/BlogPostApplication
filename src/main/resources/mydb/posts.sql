@@ -1,0 +1,6 @@
+CREATE TABLE posts(
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    body VARCHAR(255) NOT NULL,
+    date DATE
+);

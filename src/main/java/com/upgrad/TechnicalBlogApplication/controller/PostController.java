@@ -1,21 +1,29 @@
 package com.upgrad.TechnicalBlogApplication.controller;
 
 import com.upgrad.TechnicalBlogApplication.model.Post;
+import com.upgrad.TechnicalBlogApplication.model.User;
 import com.upgrad.TechnicalBlogApplication.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class PostController {
+
+    @Autowired
+    private PostService postService;
+
     @RequestMapping("/posts")
-    public String getUserPost(Model model) {
-        PostService postService = new PostService();
-        ArrayList<Post> posts = postService.getAllPosts();
+    public String getUserPost(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("LoggedUser");
+        List<Post> posts = postService.getAllPosts(user.getId());
         model.addAttribute("posts", posts);
         return "posts";
     }
@@ -29,10 +37,29 @@ public class PostController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/posts/create")
-    public String createNewPost(Post newPost) {
-        PostService postService = new PostService();
+    public String createNewPost(Post newPost, HttpSession session) {
+        // Pick the User
+        User user = (User) session.getAttribute("LoggedUser");
+        newPost.setUser(user);
+
         newPost.setDate(new Date());
         postService.createPost(newPost);
+        return "redirect:/posts";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/editpost")
+    public String editPost(@RequestParam(value = "postId") Integer postId, Model model) {
+        Post post = postService.getPost(postId);
+        model.addAttribute("post", post);
+        return "posts/edit";
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/editpost")
+    public String editPostSubmit(@RequestParam(value = "postId") Integer postId, Post updatedPost, HttpSession session) {
+        updatedPost.setId(postId);
+        User user = (User) session.getAttribute("LoggedUser");
+        updatedPost.setUser(user);
+        postService.updatePost(updatedPost);
         return "redirect:/posts";
     }
 }

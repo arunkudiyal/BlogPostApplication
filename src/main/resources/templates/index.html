@@ -5,6 +5,10 @@
     <title>Blog Post Application</title>
 </head>
 <body>
+    <header>
+        <a href="users/login.html" th:href="@{/users/login}">Login</a>
+        <a href="users/register.html" th:href="@{/users/registration}">Register</a>
+    </header>
     <h1>All Blog Posts</h1>
     <main id="posts">
         <post th:each="p : ${posts}">
